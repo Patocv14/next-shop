@@ -48,7 +48,6 @@ export default async function ProductPage({ params }: Props) {
   const { slug } = params;
 
   const product = await getProductBySlug(slug);
-  console.log(product);
 
   if (!product) {
     notFound();
