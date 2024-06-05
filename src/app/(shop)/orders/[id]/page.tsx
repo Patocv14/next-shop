@@ -1,5 +1,5 @@
 import { getOrderById } from "@/actions";
-import { Title } from "@/components";
+import { PaypalButton, Title } from "@/components";
 import { IsPaid } from "./ui/IsPaid";
 import { ProductsInCart } from "./ui/ProductsInCart";
 import { redirect } from "next/navigation";
@@ -14,14 +14,13 @@ export default async function OrderPage({ params }: Props) {
   const { id } = params;
 
   const { order, ok } = await getOrderById(id);
-  if(!ok || !order) {
-    redirect('/')
+  if (!ok || !order) {
+    redirect("/");
   }
-  const { OrderAddress, OrderItem } = order
-  if(!OrderAddress || !OrderItem) {
-    redirect('/')
+  const { OrderAddress, OrderItem } = order;
+  if (!OrderAddress || !OrderItem) {
+    redirect("/");
   }
-
 
   return (
     <div className="flex justify-center items-center mb-72 px-10 sm:px-0">
@@ -44,7 +43,9 @@ export default async function OrderPage({ params }: Props) {
           <div className="bg-white rounded-xl shadow-xl p-7">
             <h2 className="text-2xl mb-2">Direccion de entrega</h2>
             <div className="mb-10">
-              <p className="text-xl font-bold">{OrderAddress.firstName} {OrderAddress.lastName}</p>
+              <p className="text-xl font-bold">
+                {OrderAddress.firstName} {OrderAddress.lastName}
+              </p>
               <p>{OrderAddress.address}</p>
               <p>{OrderAddress.city}</p>
               <p>{OrderAddress.phone}</p>
@@ -71,7 +72,11 @@ export default async function OrderPage({ params }: Props) {
               <span className="mt-5 text-2xl text-right">{order.total}</span>
             </div>
             <div className="mt-5 mb-2 w-full">
-              <IsPaid isPaid={order.isPaid} />
+              {order.isPaid ? (
+                <IsPaid isPaid={order.isPaid} />
+              ) : (
+                <PaypalButton amount={order.total} orderId={order.id} />
+              )}
             </div>
           </div>
         </div>
